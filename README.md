@@ -20,6 +20,18 @@ Watch it in action with this
 
 The tool is mainly supporting Windows OS, but can also be used on other win32 runtimes.
 
+### macOS support
+
+A native macOS build, for Apple Silicon and Intel Macs, comes from the same
+[ZWaveControllerUI.Avalonia](ZWaveControllerUI.Avalonia/README.md) project:
+
+```sh
+curl -sSL https://dot.net/v1/dotnet-install.sh | bash -s -- --channel 10.0
+ZWaveControllerUI.Avalonia/build-macos.sh --install
+```
+
+On Apple Silicon, Z/IP Gateway (DTLS) connections are not available yet.
+
 ### GNU/Linux support
 
 A native GNU/Linux build, with serial port support, is in

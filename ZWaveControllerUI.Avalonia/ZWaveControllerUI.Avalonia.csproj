@@ -55,9 +55,21 @@ SPDX-FileCopyrightText: Z-Wave Alliance <https://z-wavealliance.org>
   </ItemGroup>
 
   <!-- Native S2 crypto and Z/IP transport. The referenced libraries only pick these up for an explicit
-       RuntimeIdentifier, which project references do not receive, so the app carries them itself. -->
-  <ItemGroup>
-    <None Include="..\z-wave-tools-core\z-wave-blobs\z-wave-tools-core\CryptoLibraryS2\linux\libs2crypto64.so" Link="libs2crypto64.so" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
-    <None Include="..\z-wave-tools-core\z-wave-blobs\z-wave-tools-core\ZipTransport\linux\libziptrans64.so" Link="libziptrans64.so" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+       RuntimeIdentifier, which project references do not receive, so the app carries them itself.
+       They are chosen for the RuntimeIdentifier, or for the host when building without one. -->
+  <PropertyGroup>
+    <BlobsDir>..\z-wave-tools-core\z-wave-blobs\z-wave-tools-core\</BlobsDir>
+    <NativeRid>$(RuntimeIdentifier)</NativeRid>
+    <NativeRid Condition="'$(NativeRid)' == ''">$(NETCoreSdkRuntimeIdentifier)</NativeRid>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(NativeRid)' == 'linux-x64'">
+    <None Include="$(BlobsDir)CryptoLibraryS2\linux\libs2crypto64.so" Link="libs2crypto64.so" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="$(BlobsDir)ZipTransport\linux\libziptrans64.so" Link="libziptrans64.so" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup Condition="'$(NativeRid)' == 'osx-x64'">
+    <None Include="$(BlobsDir)CryptoLibraryS2\osx\libs2crypto64.dylib" Link="libs2crypto64.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="$(BlobsDir)ZipTransport\osx\libziptrans64.dylib" Link="libziptrans64.dylib" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+  <!-- osx-arm64 and linux-arm64 have no native builds: S2 crypto runs on the managed implementation of
+       z-wave-tools-core, and Z/IP over DTLS is not available. -->
 </Project>

@@ -65,10 +65,14 @@ namespace ZWaveControllerUI.Views
             LogList.ScrollIntoView(LogList.ItemCount - 1);
         }
 
-        // Ctrl+C copies the selected messages.
+        // The platform's copy gesture (Ctrl+C, Cmd+C on macOS) copies the selected messages.
         private async void OnLogListKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.C || !e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            var copyGestures = Avalonia.Application.Current?.PlatformSettings?.HotkeyConfiguration.Copy;
+            bool isCopy = copyGestures != null
+                ? copyGestures.Any(g => g.Matches(e))
+                : e.Key == Key.C && e.KeyModifiers.HasFlag(KeyModifiers.Control);
+            if (!isCopy)
                 return;
             var lines = LogList.SelectedItems?.OfType<LogPacket>()
                 .OrderBy(x => x.Timestamp)
